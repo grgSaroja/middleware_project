@@ -20,13 +20,21 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
             Route::resource('dashboard', DashboardController::class);
-            Route::resource('user', UserController::class);
+            Route::resource('user', AdminController::class);
 
         });
     });
+
+    Route::group(['middleware' => 'auth'], function () {
+        Route::group(['prefix' => 'user', 'middleware' => 'user'], function(){
+                Route::resource('home', HomeController::class);    
+            });
+        });
+
+Route::get('/logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');
